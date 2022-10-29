@@ -1,0 +1,23 @@
+{
+  "name": "workplace-roster",
+  "version": "1.0.0",
+  "description": "A command line application allowing users to create a persistent and highly organized database of employees.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joerdixon/workplace-roster.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joerdixon/workplace-roster/issues"
+  },
+  "homepage": "https://github.com/joerdixon/workplace-roster#readme",
+  "dependencies": {
+    "inquirer": "^8.2.5",
+    "mysql2": "^2.3.3"
+  }
+}
