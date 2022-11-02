@@ -21,8 +21,8 @@ async function showMenu () {
       name: "action",
       message: "What would you like to do?",
       type: "list",
-      choices: ["View All Employees","Add Employee", "Update Employee Role", "View All Roles", "Add Role", "View All Departments", "Add Department", "Exit"],
-      default: "View All Employees"
+      choices: ["View All Departments", "View All Roles", "View All Employees", "Add Department", "Add Role", "Add Employee", "Update Employee Role", "Exit"],
+      default: "View All Departments"
     }
   ])
   // Execute desired action or exit.
@@ -56,10 +56,11 @@ async function showMenu () {
 
 // View All Employees
 async function viewAllEmps () {
-  db.query("SELECT employees.id AS ID, employees.first_name AS Name, roles.title AS Title FROM employees JOIN roles ON employees.role_id = roles.id;", (err, results) => {
+  db.query("SELECT a.id AS ID, a.first_name AS First, a.last_name AS Last, roles.title AS Title, roles.salary AS Salary, departments.name AS Dept, b.first_name AS Manager FROM employees a LEFT JOIN roles ON a.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees b ON a.manager_id = b.id;", (err, results) => {
     if(err) {
       console.log(err)
     } else {
+      console.log();
       console.table(results);
       showMenu();
     }
@@ -68,6 +69,10 @@ async function viewAllEmps () {
 
 // Add an Employee
 async function addEmp () {
+  db.query("SELECT a.id AS ID, a.first_name AS First, a.last_name AS Last, roles.title AS Title, roles.salary AS Salary, departments.name AS Dept, b.first_name AS Manager FROM employees a LEFT JOIN roles ON a.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees b ON a.manager_id = b.id", (err, results) => {
+    console.table(results);
+    console.log();
+  })
   // Prompt the user for new employee info.
   const newEmp = await inquirer.prompt([
     {
@@ -92,10 +97,11 @@ async function addEmp () {
     }
   ]);
   // Construct query from answers, santize.
-  db.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?);", [newEmp.firstName, newEmp.lastName, newEmp.empRole, newEmp.empMan], (err, results) => {
+  db.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?);", [newEmp.firstName, newEmp.lastName, newEmp.empRole, newEmp.empMan], async (err, results) => {
     if (err) {
       console.log(err);
     } else {
+      console.log();
       console.log(`${newEmp.firstName} ${newEmp.lastName} has been added!`)
     }
     showMenu();
@@ -108,6 +114,7 @@ async function updateEmp () {
     if(err) {
       console.log(err)
     } else {
+      console.log();
       console.table(results);
     }
   })
@@ -136,6 +143,7 @@ async function updateEmp () {
 // View All Roles
 async function viewAllRoles () {
   db.query("SELECT roles.id AS ID, roles.title AS Title, departments.name AS Dept, roles.salary AS Salary FROM roles JOIN departments ON roles.department_id = departments.id;", (err, results) => {
+    console.log();
     console.table(results);
     showMenu();
   })
@@ -198,6 +206,7 @@ async function addDept () {
     if (err) {
       console.log(err);
     } else {
+      console.log();
       console.log(`${newDept.deptName} Added!`)
     }
     showMenu();
